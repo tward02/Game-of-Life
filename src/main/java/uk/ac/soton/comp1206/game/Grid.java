@@ -126,7 +126,7 @@ public class Grid {
         var rand = new Random();
         for(var y = 0; y < rows; y++) {
             for(var x = 0; x < cols; x++) {
-                if (rand.nextInt(2) == 1) {
+                if (rand.nextInt(6) == 1) {
                     set(x, y, 1);
                 }
             }

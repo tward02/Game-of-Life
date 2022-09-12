@@ -145,7 +145,7 @@ public class Game {
             }
         };
         tickTimer = new Timer("Timer");
-        tickTimer.schedule(task, 0, 200);
+        tickTimer.schedule(task, 0, 150);
     }
 
     public void pause() {

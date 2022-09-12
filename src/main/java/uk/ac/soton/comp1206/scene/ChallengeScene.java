@@ -15,8 +15,8 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
-//TODO add the core logic/functionality, add a way to revert to the start of a sim, add a tick counter,, add a way to
-// set the time between ticks,, make sure that they can only make changes to the board when the sim has been stopped
+//TODO add a way to revert to the start of a sim, add a tick counter, add a way to
+// set the time between ticks, make sure that they can only make changes to the board when the sim has been stopped
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
  */
@@ -137,6 +137,10 @@ public class ChallengeScene extends BaseScene {
         var input = numInput.getText();
         try {
             var size = Integer.parseInt(input);
+            if (size > 50) {
+                Alert warning = new Alert(Alert.AlertType.WARNING, "Large grids will greatly reduce performance");
+                warning.showAndWait();
+            }
             newBoard(size);
             logger.info("Board updated to size: " + size);
         } catch (Exception e) {
