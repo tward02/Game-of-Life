@@ -1,8 +1,12 @@
 package uk.ac.soton.comp1206.game;
 
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The Game class handles the main logic, state and properties of the TetrECS game. Methods to manipulate the game state
@@ -26,6 +30,8 @@ public class Game {
      * The grid model linked to the game
      */
     protected final Grid grid;
+
+    private Timer tickTimer;
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
@@ -99,5 +105,50 @@ public class Game {
         return rows;
     }
 
+    private void tick() {
+        int[][] newGrid = new int[rows][cols];
+        for(var x = 0; x < rows; x++) {
+            for (var y = 0; y < cols; y++) {
+                var neighbours = getNeighbours(x, y);
+                if (neighbours == 2 || neighbours == 3) {
+                    newGrid[x][y] = 1;
+                } else {
+                    newGrid[x][y] = 0;
+                }
+            }
+        }
 
+        for(var x = 0; x < rows; x++) {
+            for (var y = 0; y < cols; y++) {
+                    grid.set(x, y, newGrid[x][y]);
+                }
+            }
+
+
+    }
+
+    private int getNeighbours(int x, int y) {
+        int neighbours = 0;
+        if (grid.get(x - 1, y) == 1) neighbours++;
+        if (grid.get(x + 1, y) == 1) neighbours++;
+        if (grid.get(x, y + 1) == 1) neighbours++;
+        if (grid.get(x, y - 1) == 1) neighbours++;
+        logger.info("block: " + x + "," + y + " has " + neighbours + " neighbours");
+        return neighbours;
+    }
+
+    public void play() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> tick());
+            }
+        };
+        tickTimer = new Timer("Timer");
+        tickTimer.schedule(task, 0, 200);
+    }
+
+    public void pause() {
+        tickTimer.cancel();
+    }
 }

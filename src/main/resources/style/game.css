@@ -12,7 +12,7 @@
 }
 
 .challenge-background {
-    -fx-background-image: url("../images/2.jpg");
+    -fx-background-color: lightblue;
     -fx-background-size: cover;
 }
 
@@ -21,23 +21,24 @@
 }
 
 .menuItem {
-    -fx-fill: white;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-font-family: 'Orbitron-Regular.ttf';
+    -fx-font-weight: 600;
+    -fx-font-size: 30px;
+    -fx-text-fill: #828282;
+    -fx-effect: dropshadow(gaussian, blue, 1, 1.0, 1, 1);
 }
 
 .menuItem:hover {
-    -fx-fill: yellow;
+    -fx-text-fill: yellow;
 }
 
 .menuItem.selected {
-    -fx-fill: yellow;
+    -fx-text-fill: yellow;
 }
-
 .bigtitle {
     -fx-fill: yellow;
     -fx-font-family: 'Orbitron';
