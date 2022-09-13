@@ -9,12 +9,13 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.App;
-import uk.ac.soton.comp1206.scene.*;
+import uk.ac.soton.comp1206.scene.BaseScene;
+import uk.ac.soton.comp1206.scene.ChallengeScene;
 
 /**
  * The GameWindow is the single window for the game where everything takes place. To move between screens in the game,
  * we simply change the scene.
- *
+ * <p>
  * The GameWindow has methods to launch each of the different parts of the game by switching scenes. You can add more
  * methods here to add more screens to the game.
  */
@@ -32,8 +33,9 @@ public class GameWindow {
 
     /**
      * Create a new GameWindow attached to the given stage with the specified width and height
-     * @param stage stage
-     * @param width width
+     *
+     * @param stage  stage
+     * @param width  width
      * @param height height
      */
     public GameWindow(Stage stage, int width, int height) {
@@ -62,9 +64,9 @@ public class GameWindow {
         logger.info("Loading resources");
 
         //We need to load fonts here due to the Font loader bug with spaces in URLs in the CSS files
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Regular.ttf"),32);
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Bold.ttf"),32);
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-ExtraBold.ttf"),32);
+        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Regular.ttf"), 32);
+        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Bold.ttf"), 32);
+        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-ExtraBold.ttf"), 32);
     }
 
     /**
@@ -86,6 +88,7 @@ public class GameWindow {
 
     /**
      * Load a given scene which extends BaseScene and switch over.
+     *
      * @param newScene new scene to load
      */
     public void loadScene(BaseScene newScene) {
@@ -106,7 +109,7 @@ public class GameWindow {
      * Setup the default scene (an empty black scene) when no scene is loaded
      */
     public void setupDefaultScene() {
-        this.scene = new Scene(new Pane(),width,height, Color.BLACK);
+        this.scene = new Scene(new Pane(), width, height, Color.BLACK);
         stage.setScene(this.scene);
     }
 
@@ -119,6 +122,7 @@ public class GameWindow {
 
     /**
      * Get the current scene being displayed
+     *
      * @return scene
      */
     public Scene getScene() {
@@ -127,6 +131,7 @@ public class GameWindow {
 
     /**
      * Get the width of the Game Window
+     *
      * @return width
      */
     public int getWidth() {
@@ -135,6 +140,7 @@ public class GameWindow {
 
     /**
      * Get the height of the Game Window
+     *
      * @return height
      */
     public int getHeight() {

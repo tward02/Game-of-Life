@@ -1,7 +1,7 @@
 package uk.ac.soton.comp1206.ui;
 
 import javafx.geometry.Pos;
-import javafx.scene.layout.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import org.apache.logging.log4j.LogManager;
@@ -9,14 +9,14 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * The Game Pane is a special pane which will scale anything inside it to the screen and maintain the aspect ratio.
- *
+ * <p>
  * Drawing will be scaled appropriately.
- *
+ * <p>
  * This takes the worry about the layout out and will allow the game to scale to any resolution easily.
- *
+ * <p>
  * It uses the width and height given which should match the main window size. This will be the base drawing resolution,
  * but will be scaled up or down as the window is resized.
- *
+ * <p>
  * You should not need to modify this class
  */
 public class GamePane extends StackPane {
@@ -25,12 +25,13 @@ public class GamePane extends StackPane {
 
     private final int width;
     private final int height;
-    private double scalar = 1;
     private final boolean autoScale = true;
+    private double scalar = 1;
 
     /**
      * Create a new scalable GamePane with the given drawing width and height.
-     * @param width width
+     *
+     * @param width  width
      * @param height height
      */
     public GamePane(int width, int height) {
@@ -44,6 +45,7 @@ public class GamePane extends StackPane {
 
     /**
      * Update the scalar being used by this draw pane
+     *
      * @param scalar scalar
      */
     protected void setScalar(double scalar) {
@@ -58,7 +60,7 @@ public class GamePane extends StackPane {
     public void layoutChildren() {
         super.layoutChildren();
 
-        if(!autoScale) {
+        if (!autoScale) {
             return;
         }
 
@@ -74,7 +76,7 @@ public class GamePane extends StackPane {
         }
 
         //Set up the scale
-        Scale scale = new Scale(scalar,scalar);
+        Scale scale = new Scale(scalar, scalar);
 
         //Get the parent width and height
         var parentWidth = getWidth();
@@ -90,5 +92,4 @@ public class GamePane extends StackPane {
         scale.setPivotY(0);
         getTransforms().setAll(translate, scale);
     }
-
 }

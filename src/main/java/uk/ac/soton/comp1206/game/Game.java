@@ -35,6 +35,7 @@ public class Game {
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
+     *
      * @param cols number of columns
      * @param rows number of rows
      */
@@ -43,7 +44,7 @@ public class Game {
         this.rows = rows;
 
         //Create a new grid model to represent the game state
-        this.grid = new Grid(cols,rows);
+        this.grid = new Grid(cols, rows);
     }
 
     /**
@@ -63,6 +64,7 @@ public class Game {
 
     /**
      * Handle what should happen when a particular block is clicked
+     *
      * @param gameBlock the block that was clicked
      */
     public void blockClicked(GameBlock gameBlock) {
@@ -71,18 +73,19 @@ public class Game {
         int y = gameBlock.getY();
 
         //Get the new value for this block
-        int previousValue = grid.get(x,y);
+        int previousValue = grid.get(x, y);
         int newValue = previousValue + 1;
-        if (newValue  > 1) {
+        if (newValue > 1) {
             newValue = 0;
         }
 
         //Update the grid with the new value
-        grid.set(x,y,newValue);
+        grid.set(x, y, newValue);
     }
 
     /**
      * Get the grid model inside this game representing the game state of the board
+     *
      * @return game grid model
      */
     public Grid getGrid() {
@@ -91,6 +94,7 @@ public class Game {
 
     /**
      * Get the number of columns in this game
+     *
      * @return number of columns
      */
     public int getCols() {
@@ -99,15 +103,20 @@ public class Game {
 
     /**
      * Get the number of rows in this game
+     *
      * @return number of rows
      */
     public int getRows() {
         return rows;
     }
 
+    /**
+     * Simulates one step of the game, it loops through the current board and calculates which tiles are alive and
+     * which are dead and then updates the board the show the new config
+     */
     private void tick() {
         int[][] newGrid = new int[rows][cols];
-        for(var x = 0; x < rows; x++) {
+        for (var x = 0; x < rows; x++) {
             for (var y = 0; y < cols; y++) {
                 var neighbours = getNeighbours(x, y);
                 if (neighbours == 2 || neighbours == 3) {
@@ -118,15 +127,20 @@ public class Game {
             }
         }
 
-        for(var x = 0; x < rows; x++) {
+        for (var x = 0; x < rows; x++) {
             for (var y = 0; y < cols; y++) {
-                    grid.set(x, y, newGrid[x][y]);
-                }
+                grid.set(x, y, newGrid[x][y]);
             }
-
-
+        }
     }
 
+    /**
+     * Calculates the number of neighbours of a tile at the given tile coordinate
+     *
+     * @param x the x coordinate of the tile
+     * @param y the y coordinate of the tile
+     * @return the number of the neighbours of the given tile
+     */
     private int getNeighbours(int x, int y) {
         int neighbours = 0;
         if (grid.get(x - 1, y) == 1) neighbours++;
@@ -137,6 +151,9 @@ public class Game {
         return neighbours;
     }
 
+    /**
+     * Starts the simulation by scheduling and running a tick every 150ms
+     */
     public void play() {
         TimerTask task = new TimerTask() {
             @Override
@@ -148,6 +165,9 @@ public class Game {
         tickTimer.schedule(task, 0, 150);
     }
 
+    /**
+     * Pauses the simulation by stopping the timer and the task
+     */
     public void pause() {
         tickTimer.cancel();
     }

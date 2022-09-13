@@ -4,22 +4,21 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * The Visual User Interface component representing a single block in the grid.
- *
+ * <p>
  * Extends Canvas and is responsible for drawing itself.
- *
+ * <p>
  * Displays an empty square (when the value is 0) or a coloured square depending on value.
- *
+ * <p>
  * The GameBlock value should be bound to a corresponding block in the Grid model.
  */
 public class GameBlock extends Canvas {
-
-    private static final Logger logger = LogManager.getLogger(GameBlock.class);
 
     /**
      * The set of colours for different pieces
@@ -28,7 +27,7 @@ public class GameBlock extends Canvas {
             Color.TRANSPARENT,
             Color.BLACK
     };
-
+    private static final Logger logger = LogManager.getLogger(GameBlock.class);
     private final GameBoard gameBoard;
 
     private final double width;
@@ -51,11 +50,12 @@ public class GameBlock extends Canvas {
 
     /**
      * Create a new single Game Block
+     *
      * @param gameBoard the board this block belongs to
-     * @param x the column the block exists in
-     * @param y the row the block exists in
-     * @param width the width of the canvas to render
-     * @param height the height of the canvas to render
+     * @param x         the column the block exists in
+     * @param y         the row the block exists in
+     * @param width     the width of the canvas to render
+     * @param height    the height of the canvas to render
      */
     public GameBlock(GameBoard gameBoard, int x, int y, double width, double height) {
         this.gameBoard = gameBoard;
@@ -77,9 +77,10 @@ public class GameBlock extends Canvas {
 
     /**
      * When the value of this block is updated,
+     *
      * @param observable what was updated
-     * @param oldValue the old value
-     * @param newValue the new value
+     * @param oldValue   the old value
+     * @param newValue   the new value
      */
     private void updateValue(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         paint();
@@ -90,7 +91,7 @@ public class GameBlock extends Canvas {
      */
     public void paint() {
         //If the block is empty, paint as empty
-        if(value.get() == 0) {
+        if (value.get() == 0) {
             paintEmpty();
         } else {
             //If the block is not empty, paint with the colour represented by the value
@@ -105,38 +106,40 @@ public class GameBlock extends Canvas {
         var gc = getGraphicsContext2D();
 
         //Clear
-        gc.clearRect(0,0,width,height);
+        gc.clearRect(0, 0, width, height);
 
         //Fill
         gc.setFill(Color.WHITE);
-        gc.fillRect(0,0, width, height);
+        gc.fillRect(0, 0, width, height);
 
         //Border
         gc.setStroke(Color.BLACK);
-        gc.strokeRect(0,0,width,height);
+        gc.strokeRect(0, 0, width, height);
     }
 
     /**
      * Paint this canvas with the given colour
+     *
      * @param colour the colour to paint
      */
     private void paintColor(Paint colour) {
         var gc = getGraphicsContext2D();
 
         //Clear
-        gc.clearRect(0,0,width,height);
+        gc.clearRect(0, 0, width, height);
 
         //Colour fill
         gc.setFill(colour);
-        gc.fillRect(0,0, width, height);
+        gc.fillRect(0, 0, width, height);
 
         //Border
         gc.setStroke(Color.BLACK);
-        gc.strokeRect(0,0,width,height);
+        gc.strokeRect(0, 0, width, height);
     }
 
     /**
      * Get the column of this block
+     *
      * @return column number
      */
     public int getX() {
@@ -145,6 +148,7 @@ public class GameBlock extends Canvas {
 
     /**
      * Get the row of this block
+     *
      * @return row number
      */
     public int getY() {
@@ -153,6 +157,7 @@ public class GameBlock extends Canvas {
 
     /**
      * Get the current value held by this block, representing it's colour
+     *
      * @return value
      */
     public int getValue() {
@@ -160,11 +165,12 @@ public class GameBlock extends Canvas {
     }
 
     /**
-     * Bind the value of this block to another property. Used to link the visual block to a corresponding block in the Grid.
+     * Bind the value of this block to another property. Used to link the visual block to a corresponding block in
+     * the Grid.
+     *
      * @param input property to bind the value to
      */
     public void bind(ObservableValue<? extends Number> input) {
         value.bind(input);
     }
-
 }

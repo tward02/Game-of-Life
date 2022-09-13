@@ -10,7 +10,8 @@ public interface BlockClickedListener {
 
     /**
      * Handle a block clicked event
+     *
      * @param block the block that was clicked
      */
-    public void blockClicked(GameBlock block);
+    void blockClicked(GameBlock block);
 }

@@ -7,7 +7,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -17,6 +19,7 @@ import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 //TODO add a way to revert to the start of a sim, add a tick counter, add a way to
 // set the time between ticks, make sure that they can only make changes to the board when the sim has been stopped
+
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
  */
@@ -25,13 +28,15 @@ public class ChallengeScene extends BaseScene {
     private static final Logger logger = LogManager.getLogger(ChallengeScene.class);
     protected Game game;
     private BorderPane mainPane;
-    private GameBoard board;
     private TextField numInput;
     private Button start;
     private Button stop;
+    private Button randomize;
+    private Button generate;
 
     /**
      * Create a new Single Player challenge scene
+     *
      * @param gameWindow the Game Window
      */
     public ChallengeScene(GameWindow gameWindow) {
@@ -48,7 +53,7 @@ public class ChallengeScene extends BaseScene {
 
         setupGame();
 
-        root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());
+        root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
         var challengePane = new StackPane();
         challengePane.setMaxWidth(gameWindow.getWidth());
@@ -71,9 +76,9 @@ public class ChallengeScene extends BaseScene {
         stop = new Button("Stop");
         stop.getStyleClass().add("menuItem");
         stop.setVisible(false);
-        var randomize = new Button("Randomize");
+        randomize = new Button("Randomize");
         randomize.getStyleClass().add("menuItem");
-        var generate = new Button("Generate");
+        generate = new Button("Generate");
         generate.getStyleClass().add("menuItem");
         numInput = new TextField();
         numInput.setPromptText("Enter Size of Grid");
@@ -98,6 +103,7 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * Handle when a block is clicked
+     *
      * @param gameBlock the Game Block that was clocked
      */
     private void blockClicked(GameBlock gameBlock) {
@@ -117,21 +123,28 @@ public class ChallengeScene extends BaseScene {
     /**
      * Initialise the scene and start the game
      */
-    //TODO might need to get rid of this
     @Override
     public void initialise() {
         logger.info("Initialising Challenge");
         game.start();
     }
 
+    /**
+     * Creates and adds a new board to the main pane
+     *
+     * @param size x and y dimensions of the board
+     */
     private void newBoard(int size) {
         logger.info("Setting up new board");
         game = new Game(size, size);
-        board = new GameBoard(game.getGrid(),gameWindow.getWidth()/1.7f,gameWindow.getWidth()/1.7f);
+        GameBoard board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 1.7f, gameWindow.getWidth() / 1.7f);
         mainPane.setCenter(board);
         board.setOnBlockClick(this::blockClicked);
     }
 
+    /**
+     * Updates the size of the board from an input field on the window
+     */
     private void updateBoardSize() {
         logger.info("Updating Board Size...");
         var input = numInput.getText();
@@ -151,20 +164,35 @@ public class ChallengeScene extends BaseScene {
         }
     }
 
+    /**
+     * Randomizes the alive squares on the board
+     */
     private void randomizeBoard() {
         game.getGrid().randomizeGrid();
     }
 
+    /**
+     * Starts the simulation and hides all the buttons that could potentially cause problems if pressed when the
+     * sim is running
+     */
     private void startSim() {
         start.setVisible(false);
+        generate.setVisible(false);
+        randomize.setVisible(false);
+        numInput.setVisible(false);
         stop.setVisible(true);
         game.play();
     }
 
+    /**
+     * Pauses the simulation and revelas the previously hidden buttons
+     */
     private void pauseSim() {
         game.pause();
         start.setVisible(true);
+        generate.setVisible(true);
+        randomize.setVisible(true);
+        numInput.setVisible(true);
         stop.setVisible(false);
     }
-
 }

@@ -2,10 +2,8 @@ package uk.ac.soton.comp1206;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 /**
@@ -13,22 +11,21 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  */
 public class App extends Application {
 
+    private static final Logger logger = LogManager.getLogger(App.class);
+    private static App instance;
     /**
      * Base resolution width
      */
     private final int width = 1200;
-
     /**
      * Base resolution height
      */
     private final int height = 1000;
-
-    private static App instance;
-    private static final Logger logger = LogManager.getLogger(App.class);
     private Stage stage;
 
     /**
      * Start the game
+     *
      * @param args commandline arguments
      */
     public static void main(String[] args) {
@@ -37,7 +34,17 @@ public class App extends Application {
     }
 
     /**
+     * Get the singleton App instance
+     *
+     * @return the app
+     */
+    public static App getInstance() {
+        return instance;
+    }
+
+    /**
      * Called by JavaFX with the primary stage as a parameter. Begins the game by opening the Game Window
+     *
      * @param stage the default stage, main window
      */
     @Override
@@ -56,7 +63,7 @@ public class App extends Application {
         logger.info("Opening game window");
 
         //Change the width and height in this class to change the base rendering resolution for all game parts
-        var gameWindow = new GameWindow(stage,width,height);
+        var gameWindow = new GameWindow(stage, width, height);
 
         //Display the GameWindow
         stage.show();
@@ -69,13 +76,4 @@ public class App extends Application {
         logger.info("Shutting down");
         System.exit(0);
     }
-
-    /**
-     * Get the singleton App instance
-     * @return the app
-     */
-    public static App getInstance() {
-        return instance;
-    }
-
 }

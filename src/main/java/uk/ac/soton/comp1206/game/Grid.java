@@ -10,12 +10,12 @@ import java.util.Random;
 /**
  * The Grid is a model which holds the state of a game board. It is made up of a set of Integer values arranged in a 2D
  * arrow, with rows and columns.
- *
+ * <p>
  * Each value inside the Grid is an IntegerProperty can be bound to enable modification and display of the contents of
  * the grid.
- *
+ * <p>
  * The Grid contains functions related to modifying the model, for example, placing a piece inside the grid.
- *
+ * <p>
  * The Grid should be linked to a GameBoard for it's display.
  */
 public class Grid {
@@ -39,6 +39,7 @@ public class Grid {
 
     /**
      * Create a new Grid with the specified number of columns and rows and initialise them
+     *
      * @param cols number of columns
      * @param rows number of rows
      */
@@ -50,8 +51,8 @@ public class Grid {
         grid = new SimpleIntegerProperty[cols][rows];
 
         //Add a SimpleIntegerProperty to every block in the grid
-        for(var y = 0; y < rows; y++) {
-            for(var x = 0; x < cols; x++) {
+        for (var y = 0; y < rows; y++) {
+            for (var x = 0; x < cols; x++) {
                 grid[x][y] = new SimpleIntegerProperty(0);
             }
         }
@@ -61,7 +62,7 @@ public class Grid {
         this.rows = rows;
         this.cols = cols;
         grid = new SimpleIntegerProperty[cols][rows];
-        for(var y = 0; y < rows; y++) {
+        for (var y = 0; y < rows; y++) {
             for (var x = 0; x < cols; x++) {
                 grid[x][y] = new SimpleIntegerProperty(a[cols][rows]);
             }
@@ -70,6 +71,7 @@ public class Grid {
 
     /**
      * Get the Integer property contained inside the grid at a given row and column index. Can be used for binding.
+     *
      * @param x column
      * @param y row
      * @return the IntegerProperty at the given x and y in this grid
@@ -80,8 +82,9 @@ public class Grid {
 
     /**
      * Update the value at the given x and y index within the grid
-     * @param x column
-     * @param y row
+     *
+     * @param x     column
+     * @param y     row
      * @param value the new value
      */
     public void set(int x, int y, int value) {
@@ -90,6 +93,7 @@ public class Grid {
 
     /**
      * Get the value represented at the given x and y index within the grid
+     *
      * @param x column
      * @param y row
      * @return the value
@@ -108,6 +112,7 @@ public class Grid {
 
     /**
      * Get the number of columns in this game
+     *
      * @return number of columns
      */
     public int getCols() {
@@ -116,21 +121,24 @@ public class Grid {
 
     /**
      * Get the number of rows in this game
+     *
      * @return number of rows
      */
     public int getRows() {
         return rows;
     }
 
+    /**
+     * Randomizes the alive squares on the current board
+     */
     public void randomizeGrid() {
         var rand = new Random();
-        for(var y = 0; y < rows; y++) {
-            for(var x = 0; x < cols; x++) {
+        for (var y = 0; y < rows; y++) {
+            for (var x = 0; x < cols; x++) {
                 if (rand.nextInt(6) == 1) {
                     set(x, y, 1);
                 }
             }
         }
     }
-
 }

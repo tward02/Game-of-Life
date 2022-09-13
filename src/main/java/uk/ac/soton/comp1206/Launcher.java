@@ -8,10 +8,10 @@ public class Launcher {
 
     /**
      * Launch the JavaFX Application, passing through the commandline arguments
+     *
      * @param args commandline arguments
      */
     public static void main(String[] args) {
         App.main(args);
     }
-
 }
