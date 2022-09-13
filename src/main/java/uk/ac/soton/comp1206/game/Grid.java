@@ -104,11 +104,9 @@ public class Grid {
     public int get(int x, int y) {
         try {
             //Get the value held in the property at the x and y index provided
-            logger.info("Get" + x + "," + y + " returns " + grid[x][y].get());
             return grid[x][y].get();
         } catch (ArrayIndexOutOfBoundsException e) {
             //No such index
-            logger.info("Get" + x + "," + y + " returns -1");
             return -1;
         }
     }

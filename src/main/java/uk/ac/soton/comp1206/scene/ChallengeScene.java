@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -18,8 +19,7 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
-//TODO add a way to set the time between ticks, make sure that they can only make changes to the board when the sim
-// has been stopped
+//TODO add a way to set the time between ticks,
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -36,9 +36,7 @@ public class ChallengeScene extends BaseScene {
     private Button generate;
     private Button clear;
     private Button revert;
-    private TextField tickDisplay;
-    private int ticks = 0;
-
+    private GameBoard board;
 
     /**
      * Create a new Single Player challenge scene
@@ -107,9 +105,18 @@ public class ChallengeScene extends BaseScene {
         tickBox.setPadding(new Insets(100, 5, 5, 10));
         tickBox.setSpacing(5);
 
-        tickDisplay = new TextField("Tick: ");
+        var tickText = new Text("Tick: ");
+        TextField tickDisplay = new TextField();
         tickDisplay.getStyleClass().add("tickCounter");
-        tickBox.getChildren().add(tickDisplay);
+        tickDisplay.setEditable(false);
+        tickText.getStyleClass().add("tickCounter");
+        var tickBox2 = new HBox();
+        tickBox2.setAlignment(Pos.CENTER);
+        tickBox2.getChildren().add(tickText);
+        tickBox2.getChildren().add(tickDisplay);
+        tickBox.getChildren().add(tickBox2);
+
+        tickDisplay.textProperty().bind(game.getTickCount().asString());
 
         mainPane.setBottom(bottomButtonBox);
         mainPane.setRight(tickBox);
@@ -126,18 +133,26 @@ public class ChallengeScene extends BaseScene {
         clear.setOnAction(e -> Platform.runLater(this::clearBoard));
         revert.setOnAction(e -> Platform.runLater(this::revertBoard));
 
-        game.setTickListener(this::addTick);
+
     }
 
     /**
      * Handle when a block is clicked
      *
-     * @param gameBlock the Game Block that was clocked
+     * @param gameBlock the Game Block that was clicked
      */
     private void blockClicked(GameBlock gameBlock) {
         game.blockClicked(gameBlock);
-        ticks = 0;
-        tickDisplay.setText("Tick: " + ticks);
+        game.getTickCount().set(0);
+    }
+
+    /**
+     * Place holder so that nothing happens when a block is clicked during a sim
+     *
+     * @param block the game block that was clicked
+     */
+    private void blockClickedDuringSim(GameBlock block) {
+
     }
 
     /**
@@ -167,7 +182,7 @@ public class ChallengeScene extends BaseScene {
     private void newBoard(int size) {
         logger.info("Setting up new board");
         game = new Game(size, size);
-        GameBoard board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 1.7f, gameWindow.getWidth() / 1.7f);
+        board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 1.7f, gameWindow.getWidth() / 1.7f);
         mainPane.setCenter(board);
         board.setOnBlockClick(this::blockClicked);
     }
@@ -199,8 +214,7 @@ public class ChallengeScene extends BaseScene {
      */
     private void randomizeBoard() {
         game.getGrid().randomizeGrid();
-        ticks = 0;
-        tickDisplay.setText("Tick: " + ticks);
+        game.getTickCount().set(0);
     }
 
     /**
@@ -216,6 +230,7 @@ public class ChallengeScene extends BaseScene {
         revert.setVisible(true);
         stop.setVisible(true);
         game.getGrid().storeGridAsArrayList();
+        board.setOnBlockClick(this::blockClickedDuringSim);
         game.play();
     }
 
@@ -231,6 +246,7 @@ public class ChallengeScene extends BaseScene {
         clear.setVisible(true);
         revert.setVisible(false);
         stop.setVisible(false);
+        board.setOnBlockClick(this::blockClicked);
     }
 
     /**
@@ -239,8 +255,7 @@ public class ChallengeScene extends BaseScene {
     private void revertBoard() {
         pauseSim();
         game.getGrid().revertGrid();
-        ticks = 0;
-        tickDisplay.setText("Tick: " + ticks);
+        game.getTickCount().set(0);
     }
 
     /**
@@ -248,15 +263,6 @@ public class ChallengeScene extends BaseScene {
      */
     private void clearBoard() {
         game.getGrid().clearGrid();
-        ticks = 0;
-        tickDisplay.setText("Tick: " + ticks);
-    }
-
-    /**
-     * Updates the tick counter by adding 1 to it
-     */
-    private void addTick() {
-        ticks++;
-        tickDisplay.setText("Tick: " + ticks);
+        game.getTickCount().set(0);
     }
 }

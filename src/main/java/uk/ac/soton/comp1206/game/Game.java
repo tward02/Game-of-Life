@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.game;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -34,7 +35,7 @@ public class Game {
 
     private Timer tickTimer;
 
-    private TickListener tickListener;
+    private final SimpleIntegerProperty tickCount = new SimpleIntegerProperty(0);
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
@@ -50,8 +51,8 @@ public class Game {
         this.grid = new Grid(cols, rows);
     }
 
-    public void setTickListener(TickListener tickListener) {
-        this.tickListener = tickListener;
+    public SimpleIntegerProperty getTickCount() {
+        return tickCount;
     }
 
     /**
@@ -147,7 +148,7 @@ public class Game {
                 grid.set(x, y, newGrid[x][y]);
             }
         }
-        tickListener.tick();
+        tickCount.set(tickCount.get() + 1);
     }
 
     /**
