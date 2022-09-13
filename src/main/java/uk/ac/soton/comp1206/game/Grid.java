@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -36,6 +37,8 @@ public class Grid {
      * The grid is a 2D arrow with rows and columns of SimpleIntegerProperties.
      */
     private final SimpleIntegerProperty[][] grid;
+
+    private ArrayList<Integer> previous;
 
     /**
      * Create a new Grid with the specified number of columns and rows and initialise them
@@ -135,9 +138,46 @@ public class Grid {
         var rand = new Random();
         for (var y = 0; y < rows; y++) {
             for (var x = 0; x < cols; x++) {
-                if (rand.nextInt(6) == 1) {
+                if (rand.nextInt(3) == 1) {
                     set(x, y, 1);
                 }
+            }
+        }
+    }
+
+    /**
+     * Clears the grid of all alive cells
+     */
+    public void clearGrid() {
+        for (var y = 0; y < rows; y++) {
+            for (var x = 0; x < cols; x++) {
+                set(x, y, 0);
+            }
+        }
+    }
+
+    /**
+     * Converts the current grid into a 1d array list starting from 0,0 and ending at cols,rows and stores it in the
+     * previous variable {@link ArrayList}
+     */
+    public void storeGridAsArrayList() {
+        previous = new ArrayList<>();
+        for (var y = 0; y < rows; y++) {
+            for (var x = 0; x < cols; x++) {
+                previous.add(get(x, y));
+            }
+        }
+    }
+
+    /**
+     * Switches the grid back to the previously saved one (grid is saved everytime the simulation is paused)
+     */
+    public void revertGrid() {
+        int i = 0;
+        for (var y = 0; y < rows; y++) {
+            for (var x = 0; x < cols; x++) {
+                set(x, y, previous.get(i));
+                i++;
             }
         }
     }

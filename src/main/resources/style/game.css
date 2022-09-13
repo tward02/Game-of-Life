@@ -21,15 +21,14 @@
 }
 
 .menuItem {
-    -fx-border-color: transparent;
+    -fx-border-color: black;
     -fx-border-width: 0;
     -fx-background-radius: 0;
-    -fx-background-color: transparent;
+    -fx-background-color: grey;
     -fx-font-family: 'Orbitron-Regular.ttf';
     -fx-font-weight: 600;
     -fx-font-size: 30px;
-    -fx-text-fill: #828282;
-    -fx-effect: dropshadow(gaussian, blue, 1, 1.0, 1, 1);
+    -fx-text-fill: black;
 }
 
 .menuItem:hover {
@@ -39,6 +38,14 @@
 .menuItem.selected {
     -fx-text-fill: yellow;
 }
+
+.tickCounter {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
 .bigtitle {
     -fx-fill: yellow;
     -fx-font-family: 'Orbitron';

@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -17,8 +18,8 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
-//TODO add a way to revert to the start of a sim, add a tick counter, add a way to
-// set the time between ticks, make sure that they can only make changes to the board when the sim has been stopped
+//TODO add a way to set the time between ticks, make sure that they can only make changes to the board when the sim
+// has been stopped
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -33,6 +34,11 @@ public class ChallengeScene extends BaseScene {
     private Button stop;
     private Button randomize;
     private Button generate;
+    private Button clear;
+    private Button revert;
+    private TextField tickDisplay;
+    private int ticks = 0;
+
 
     /**
      * Create a new Single Player challenge scene
@@ -66,10 +72,10 @@ public class ChallengeScene extends BaseScene {
 
         newBoard(10);
 
-        var buttonBox = new HBox();
-        buttonBox.setSpacing(10);
-        buttonBox.setPadding(new Insets(10, 10, 10, 10));
-        buttonBox.setAlignment(Pos.CENTER);
+        var bottomButtonBox = new HBox();
+        bottomButtonBox.setSpacing(15);
+        bottomButtonBox.setPadding(new Insets(10));
+        bottomButtonBox.setAlignment(Pos.CENTER);
 
         start = new Button("Start");
         start.getStyleClass().add("menuItem");
@@ -81,14 +87,32 @@ public class ChallengeScene extends BaseScene {
         generate = new Button("Generate");
         generate.getStyleClass().add("menuItem");
         numInput = new TextField();
+        numInput.setMinSize(0, 60);
         numInput.setPromptText("Enter Size of Grid");
-        buttonBox.getChildren().add(start);
-        buttonBox.getChildren().add(stop);
-        buttonBox.getChildren().add(randomize);
-        buttonBox.getChildren().add(generate);
-        buttonBox.getChildren().add(numInput);
+        clear = new Button("Clear");
+        clear.getStyleClass().add("menuItem");
+        revert = new Button("Revert");
+        revert.getStyleClass().add("menuItem");
+        revert.setVisible(false);
+        bottomButtonBox.getChildren().add(start);
+        bottomButtonBox.getChildren().add(stop);
+        bottomButtonBox.getChildren().add(randomize);
+        bottomButtonBox.getChildren().add(clear);
+        bottomButtonBox.getChildren().add(revert);
+        bottomButtonBox.getChildren().add(generate);
+        bottomButtonBox.getChildren().add(numInput);
 
-        mainPane.setBottom(buttonBox);
+        var tickBox = new VBox();
+        tickBox.setAlignment(Pos.TOP_RIGHT);
+        tickBox.setPadding(new Insets(100, 5, 5, 10));
+        tickBox.setSpacing(5);
+
+        tickDisplay = new TextField("Tick: ");
+        tickDisplay.getStyleClass().add("tickCounter");
+        tickBox.getChildren().add(tickDisplay);
+
+        mainPane.setBottom(bottomButtonBox);
+        mainPane.setRight(tickBox);
 
         generate.setOnAction(e -> Platform.runLater(this::updateBoardSize));
         numInput.setOnKeyPressed(e -> {
@@ -99,6 +123,10 @@ public class ChallengeScene extends BaseScene {
         randomize.setOnAction(e -> Platform.runLater(this::randomizeBoard));
         start.setOnAction(e -> Platform.runLater(this::startSim));
         stop.setOnAction(e -> Platform.runLater(this::pauseSim));
+        clear.setOnAction(e -> Platform.runLater(this::clearBoard));
+        revert.setOnAction(e -> Platform.runLater(this::revertBoard));
+
+        game.setTickListener(this::addTick);
     }
 
     /**
@@ -108,6 +136,8 @@ public class ChallengeScene extends BaseScene {
      */
     private void blockClicked(GameBlock gameBlock) {
         game.blockClicked(gameBlock);
+        ticks = 0;
+        tickDisplay.setText("Tick: " + ticks);
     }
 
     /**
@@ -169,6 +199,8 @@ public class ChallengeScene extends BaseScene {
      */
     private void randomizeBoard() {
         game.getGrid().randomizeGrid();
+        ticks = 0;
+        tickDisplay.setText("Tick: " + ticks);
     }
 
     /**
@@ -180,12 +212,15 @@ public class ChallengeScene extends BaseScene {
         generate.setVisible(false);
         randomize.setVisible(false);
         numInput.setVisible(false);
+        clear.setVisible(false);
+        revert.setVisible(true);
         stop.setVisible(true);
+        game.getGrid().storeGridAsArrayList();
         game.play();
     }
 
     /**
-     * Pauses the simulation and revelas the previously hidden buttons
+     * Pauses the simulation and reveals the previously hidden buttons
      */
     private void pauseSim() {
         game.pause();
@@ -193,6 +228,35 @@ public class ChallengeScene extends BaseScene {
         generate.setVisible(true);
         randomize.setVisible(true);
         numInput.setVisible(true);
+        clear.setVisible(true);
+        revert.setVisible(false);
         stop.setVisible(false);
+    }
+
+    /**
+     * Reverts the board to what it was before the sim started
+     */
+    private void revertBoard() {
+        pauseSim();
+        game.getGrid().revertGrid();
+        ticks = 0;
+        tickDisplay.setText("Tick: " + ticks);
+    }
+
+    /**
+     * Clears the board of all cells that are alive
+     */
+    private void clearBoard() {
+        game.getGrid().clearGrid();
+        ticks = 0;
+        tickDisplay.setText("Tick: " + ticks);
+    }
+
+    /**
+     * Updates the tick counter by adding 1 to it
+     */
+    private void addTick() {
+        ticks++;
+        tickDisplay.setText("Tick: " + ticks);
     }
 }

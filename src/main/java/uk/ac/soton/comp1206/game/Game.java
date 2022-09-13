@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
+import uk.ac.soton.comp1206.event.TickListener;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +34,8 @@ public class Game {
 
     private Timer tickTimer;
 
+    private TickListener tickListener;
+
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
      *
@@ -45,6 +48,10 @@ public class Game {
 
         //Create a new grid model to represent the game state
         this.grid = new Grid(cols, rows);
+    }
+
+    public void setTickListener(TickListener tickListener) {
+        this.tickListener = tickListener;
     }
 
     /**
@@ -119,10 +126,18 @@ public class Game {
         for (var x = 0; x < rows; x++) {
             for (var y = 0; y < cols; y++) {
                 var neighbours = getNeighbours(x, y);
-                if (neighbours == 2 || neighbours == 3) {
-                    newGrid[x][y] = 1;
+                if (grid.get(x, y) == 1) {
+                    if (neighbours == 2 || neighbours == 3) {
+                        newGrid[x][y] = 1;
+                    } else {
+                        newGrid[x][y] = 0;
+                    }
                 } else {
-                    newGrid[x][y] = 0;
+                    if (neighbours == 3) {
+                        newGrid[x][y] = 1;
+                    } else {
+                        newGrid[x][y] = 0;
+                    }
                 }
             }
         }
@@ -132,6 +147,7 @@ public class Game {
                 grid.set(x, y, newGrid[x][y]);
             }
         }
+        tickListener.tick();
     }
 
     /**
@@ -147,6 +163,10 @@ public class Game {
         if (grid.get(x + 1, y) == 1) neighbours++;
         if (grid.get(x, y + 1) == 1) neighbours++;
         if (grid.get(x, y - 1) == 1) neighbours++;
+        if (grid.get(x - 1, y + 1) == 1) neighbours++;
+        if (grid.get(x + 1, y - 1) == 1) neighbours++;
+        if (grid.get(x + 1, y + 1) == 1) neighbours++;
+        if (grid.get(x - 1, y - 1) == 1) neighbours++;
         logger.info("block: " + x + "," + y + " has " + neighbours + " neighbours");
         return neighbours;
     }
