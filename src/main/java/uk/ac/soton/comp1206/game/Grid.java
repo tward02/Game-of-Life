@@ -133,6 +133,7 @@ public class Grid {
      * Randomizes the alive squares on the current board
      */
     public void randomizeGrid() {
+        clearGrid();
         var rand = new Random();
         for (var y = 0; y < rows; y++) {
             for (var x = 0; x < cols; x++) {

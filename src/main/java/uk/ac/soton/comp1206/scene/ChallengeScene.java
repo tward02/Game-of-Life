@@ -19,7 +19,7 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
-//TODO add a way to set the time between ticks,
+//TODO add a way to set the time between ticks, add a way to save and load configurations
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -37,6 +37,7 @@ public class ChallengeScene extends BaseScene {
     private Button clear;
     private Button revert;
     private GameBoard board;
+    private TextField tickDisplay;
 
     /**
      * Create a new Single Player challenge scene
@@ -67,6 +68,7 @@ public class ChallengeScene extends BaseScene {
 
         mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
+        tickDisplay = new TextField();
 
         newBoard(10);
 
@@ -106,7 +108,7 @@ public class ChallengeScene extends BaseScene {
         tickBox.setSpacing(5);
 
         var tickText = new Text("Tick: ");
-        TextField tickDisplay = new TextField();
+
         tickDisplay.getStyleClass().add("tickCounter");
         tickDisplay.setEditable(false);
         tickText.getStyleClass().add("tickCounter");
@@ -143,7 +145,7 @@ public class ChallengeScene extends BaseScene {
      */
     private void blockClicked(GameBlock gameBlock) {
         game.blockClicked(gameBlock);
-        game.getTickCount().set(0);
+        setTickCounter0();
     }
 
     /**
@@ -185,6 +187,7 @@ public class ChallengeScene extends BaseScene {
         board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 1.7f, gameWindow.getWidth() / 1.7f);
         mainPane.setCenter(board);
         board.setOnBlockClick(this::blockClicked);
+        tickDisplay.textProperty().bind(game.getTickCount().asString());
     }
 
     /**
@@ -200,6 +203,7 @@ public class ChallengeScene extends BaseScene {
                 warning.showAndWait();
             }
             newBoard(size);
+            setTickCounter0();
             logger.info("Board updated to size: " + size);
         } catch (Exception e) {
             logger.info("Failed to update board size due to invalid input: " + input);
@@ -214,7 +218,7 @@ public class ChallengeScene extends BaseScene {
      */
     private void randomizeBoard() {
         game.getGrid().randomizeGrid();
-        game.getTickCount().set(0);
+        setTickCounter0();
     }
 
     /**
@@ -255,7 +259,7 @@ public class ChallengeScene extends BaseScene {
     private void revertBoard() {
         pauseSim();
         game.getGrid().revertGrid();
-        game.getTickCount().set(0);
+        setTickCounter0();
     }
 
     /**
@@ -263,6 +267,14 @@ public class ChallengeScene extends BaseScene {
      */
     private void clearBoard() {
         game.getGrid().clearGrid();
-        game.getTickCount().set(0);
+        setTickCounter0();
+    }
+
+    /**
+     * Sets the tick counter back to 0
+     */
+    private void setTickCounter0() {
+        Platform.runLater(() -> game.getTickCount().set(0)
+        );
     }
 }
