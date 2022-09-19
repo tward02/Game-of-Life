@@ -36,6 +36,8 @@ public class Game {
 
     private final SimpleIntegerProperty tickCount = new SimpleIntegerProperty(0);
 
+    private final SimpleIntegerProperty tickTime = new SimpleIntegerProperty(150);
+
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
      *
@@ -67,6 +69,10 @@ public class Game {
      */
     public void initialiseGame() {
         logger.info("Initialising game");
+    }
+
+    public SimpleIntegerProperty getTickTime() {
+        return tickTime;
     }
 
     /**
@@ -182,7 +188,7 @@ public class Game {
             }
         };
         tickTimer = new Timer("Timer");
-        tickTimer.schedule(task, 0, 150);
+        tickTimer.schedule(task, 0, tickTime.get());
     }
 
     /**

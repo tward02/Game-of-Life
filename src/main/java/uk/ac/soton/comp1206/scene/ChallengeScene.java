@@ -1,10 +1,12 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -19,7 +21,8 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
-//TODO add a way to set the time between ticks, add a way to save and load configurations
+//TODO add a way to save and load configurations, add way to calculate how
+// many ticks until stabilization
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -38,6 +41,7 @@ public class ChallengeScene extends BaseScene {
     private Button revert;
     private GameBoard board;
     private TextField tickDisplay;
+    private Slider tickSlider;
 
     /**
      * Create a new Single Player challenge scene
@@ -118,6 +122,25 @@ public class ChallengeScene extends BaseScene {
         tickBox2.getChildren().add(tickDisplay);
         tickBox.getChildren().add(tickBox2);
 
+        var tickBox3 = new HBox();
+        tickBox3.setAlignment(Pos.CENTER);
+        tickBox3.setPadding(new Insets(5, 5, 5, 10));
+        tickBox3.setSpacing(5);
+        var tickLengthText = new Text("Time Between Ticks: ");
+        var tickTimeDisplay = new TextField();
+        tickTimeDisplay.setEditable(false);
+        tickBox3.getStyleClass().add("tickCounter");
+        tickLengthText.getStyleClass().add("tickCounter");
+        tickBox3.getChildren().add(tickLengthText);
+        tickBox3.getChildren().add(tickTimeDisplay);
+        tickSlider = new Slider(50, 1000, 150);
+        tickSlider.setMajorTickUnit(50);
+        tickSlider.setSnapToTicks(true);
+        tickBox.getChildren().add(tickBox3);
+        tickBox.getChildren().add(tickSlider);
+        tickTimeDisplay.textProperty().bind(tickSlider.valueProperty().asString());
+        game.getTickTime().bind(tickSlider.valueProperty());
+
         tickDisplay.textProperty().bind(game.getTickCount().asString());
 
         mainPane.setBottom(bottomButtonBox);
@@ -134,8 +157,6 @@ public class ChallengeScene extends BaseScene {
         stop.setOnAction(e -> Platform.runLater(this::pauseSim));
         clear.setOnAction(e -> Platform.runLater(this::clearBoard));
         revert.setOnAction(e -> Platform.runLater(this::revertBoard));
-
-
     }
 
     /**
@@ -154,7 +175,6 @@ public class ChallengeScene extends BaseScene {
      * @param block the game block that was clicked
      */
     private void blockClickedDuringSim(GameBlock block) {
-
     }
 
     /**
@@ -231,6 +251,7 @@ public class ChallengeScene extends BaseScene {
         randomize.setVisible(false);
         numInput.setVisible(false);
         clear.setVisible(false);
+        tickSlider.setVisible(false);
         revert.setVisible(true);
         stop.setVisible(true);
         game.getGrid().storeGridAsArrayList();
@@ -248,6 +269,7 @@ public class ChallengeScene extends BaseScene {
         randomize.setVisible(true);
         numInput.setVisible(true);
         clear.setVisible(true);
+        tickSlider.setVisible(true);
         revert.setVisible(false);
         stop.setVisible(false);
         board.setOnBlockClick(this::blockClicked);
@@ -274,7 +296,6 @@ public class ChallengeScene extends BaseScene {
      * Sets the tick counter back to 0
      */
     private void setTickCounter0() {
-        Platform.runLater(() -> game.getTickCount().set(0)
-        );
+        Platform.runLater(() -> game.getTickCount().set(0));
     }
 }
