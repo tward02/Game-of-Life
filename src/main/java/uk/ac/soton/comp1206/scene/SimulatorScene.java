@@ -10,6 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -17,13 +19,12 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
-import uk.ac.soton.comp1206.utilities.GoLWriter;
+import uk.ac.soton.comp1206.utilities.GoLProcessor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-//TODO add a way to save and load configurations, add way to calculate how
-// many ticks until stabilization
+//TODO add way to calculate how many ticks until stabilization add a stop feature when stabilization is reached
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -176,6 +177,7 @@ public class SimulatorScene extends BaseScene {
         clear.setOnAction(e -> Platform.runLater(this::clearBoard));
         revert.setOnAction(e -> Platform.runLater(this::revertBoard));
         save.setOnAction(e -> Platform.runLater(this::saveConfig));
+        load.setOnAction(e -> Platform.runLater(this::loadConfig));
     }
 
     /**
@@ -335,13 +337,13 @@ public class SimulatorScene extends BaseScene {
         String name = getFileName();
         System.out.println(name);
         var gridList = game.getGrid().getGridAsArrayList();
-        var golWriter = new GoLWriter(SAVE_PATH);
+        var golWriter = new GoLProcessor(SAVE_PATH);
         try {
             golWriter.saveFile(name, game.getGrid().getCols(), gridList);
         } catch (IOException e) {
             logger.error("Failed to save game IOException");
-            e.printStackTrace();
-            //TODO add error message dialogue
+            var error = new Alert(Alert.AlertType.ERROR, "Error: IOException\n\nPlease try again");
+            error.showAndWait();
         }
     }
 
@@ -398,6 +400,35 @@ public class SimulatorScene extends BaseScene {
      * Loads a board configuration from a .gol file
      */
     private void loadConfig() {
-
+        var chooser = new FileChooser();
+        chooser.setTitle("Select Configuration File to Load");
+        chooser.setInitialDirectory(new File(SAVE_PATH));
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GOL Config Files",
+                "*.gol"));
+        File selected = chooser.showOpenDialog(new Stage());
+        if (selected != null) {
+            if (!selected.getName().endsWith(".gol")) {
+                var error = new Alert(Alert.AlertType.ERROR, "Error: Invalid File Selected\n\nPlease Select " +
+                        "a .gol file");
+                error.showAndWait();
+                return;
+            }
+            var golReader = new GoLProcessor(SAVE_PATH);
+            try {
+                var gridConfig = golReader.loadFile(selected);
+                if (gridConfig == null) {
+                    var error = new Alert(Alert.AlertType.ERROR, "Error: Chosen File is Corrupt");
+                    error.showAndWait();
+                    return;
+                }
+                newBoard(gridConfig.get(0));
+                gridConfig.remove(0);
+                game.getGrid().setGridConfig(gridConfig);
+            } catch (IOException e) {
+                var error = new Alert(Alert.AlertType.ERROR, "Error: IOException Unable to Load File \n\n" +
+                        "please try again");
+                error.showAndWait();
+            }
+        }
     }
 }

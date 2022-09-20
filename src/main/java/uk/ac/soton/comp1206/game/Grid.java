@@ -195,4 +195,19 @@ public class Grid {
         }
         return gridList;
     }
+
+    /**
+     * Sets the grid to the configuration specified in the 1d array list starting at 0,0 and ending at cols,rows
+     *
+     * @param gridList 1d array list containing the board configuration
+     */
+    public void setGridConfig(ArrayList<Integer> gridList) {
+        int i = 0;
+        for (var y = 0; y < rows; y++) {
+            for (var x = 0; x < cols; x++) {
+                set(x, y, gridList.get(i));
+                i++;
+            }
+        }
+    }
 }
