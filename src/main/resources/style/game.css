@@ -22,6 +22,25 @@
     -fx-text-fill: yellow;
 }
 
+.menuItemSmall {
+    -fx-border-color: black;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: grey;
+    -fx-font-family: 'Orbitron-Regular.ttf';
+    -fx-font-weight: 600;
+    -fx-font-size: 20px;
+    -fx-text-fill: black;
+}
+
+.menuItemSmall:hover {
+    -fx-text-fill: yellow;
+}
+
+.menuItemSmall.selected {
+    -fx-text-fill: yellow;
+}
+
 .tickCounter {
     -fx-border-color: transparent;
     -fx-background-color: transparent;

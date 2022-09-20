@@ -180,4 +180,19 @@ public class Grid {
             }
         }
     }
+
+    /**
+     * Creates a 1d arraylist representation of the grid starting from 0,0 and ending at cols,rows {@link ArrayList}
+     *
+     * @return the arraylist representation of the current grid
+     */
+    public ArrayList<Integer> getGridAsArrayList() {
+        var gridList = new ArrayList<Integer>();
+        for (var y = 0; y < rows; y++) {
+            for (var x = 0; x < cols; x++) {
+                gridList.add(get(x, y));
+            }
+        }
+        return gridList;
+    }
 }

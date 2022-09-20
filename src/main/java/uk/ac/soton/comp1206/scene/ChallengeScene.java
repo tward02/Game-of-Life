@@ -1,13 +1,9 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -21,13 +17,18 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
+
+import java.io.File;
+import java.util.Optional;
 //TODO add a way to save and load configurations, add way to calculate how
-// many ticks until stabilization
+// many ticks until stabilization, rename/remove various methods and classes to suite theme of game
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
  */
 public class ChallengeScene extends BaseScene {
+
+    public static final String savePath = System.getProperty("user.home") + "Documents/GoLSaves";
 
     private static final Logger logger = LogManager.getLogger(ChallengeScene.class);
     protected Game game;
@@ -39,6 +40,8 @@ public class ChallengeScene extends BaseScene {
     private Button generate;
     private Button clear;
     private Button revert;
+    private Button save;
+    private Button load;
     private GameBoard board;
     private TextField tickDisplay;
     private Slider tickSlider;
@@ -141,6 +144,18 @@ public class ChallengeScene extends BaseScene {
         tickTimeDisplay.textProperty().bind(tickSlider.valueProperty().asString());
         game.getTickTime().bind(tickSlider.valueProperty());
 
+        var fileBox = new HBox();
+        fileBox.setSpacing(40);
+        fileBox.setPadding(new Insets(20, 5, 10, 10));
+        fileBox.setAlignment(Pos.CENTER);
+        save = new Button("Save");
+        save.getStyleClass().add("menuItemSmall");
+        load = new Button("Load");
+        load.getStyleClass().add("menuItemSmall");
+        fileBox.getChildren().add(save);
+        fileBox.getChildren().add(load);
+        tickBox.getChildren().add(fileBox);
+
         tickDisplay.textProperty().bind(game.getTickCount().asString());
 
         mainPane.setBottom(bottomButtonBox);
@@ -157,6 +172,7 @@ public class ChallengeScene extends BaseScene {
         stop.setOnAction(e -> Platform.runLater(this::pauseSim));
         clear.setOnAction(e -> Platform.runLater(this::clearBoard));
         revert.setOnAction(e -> Platform.runLater(this::revertBoard));
+        save.setOnAction(e -> Platform.runLater(this::saveConfig));
     }
 
     /**
@@ -222,9 +238,15 @@ public class ChallengeScene extends BaseScene {
                 Alert warning = new Alert(Alert.AlertType.WARNING, "Large grids will greatly reduce performance");
                 warning.showAndWait();
             }
-            newBoard(size);
-            setTickCounter0();
-            logger.info("Board updated to size: " + size);
+            if (size < 3) {
+                Alert boardTooSmallError = new Alert(Alert.AlertType.ERROR, "Unable to create grid that small \n\n " +
+                        "Please ensure grid size is at least 3");
+                boardTooSmallError.showAndWait();
+            } else {
+                newBoard(size);
+                setTickCounter0();
+                logger.info("Board updated to size: " + size);
+            }
         } catch (Exception e) {
             logger.info("Failed to update board size due to invalid input: " + input);
             Alert error = new Alert(Alert.AlertType.ERROR, "Unable to Update Board Size \n\n" +
@@ -252,6 +274,8 @@ public class ChallengeScene extends BaseScene {
         numInput.setVisible(false);
         clear.setVisible(false);
         tickSlider.setVisible(false);
+        save.setVisible(false);
+        load.setVisible(false);
         revert.setVisible(true);
         stop.setVisible(true);
         game.getGrid().storeGridAsArrayList();
@@ -269,6 +293,8 @@ public class ChallengeScene extends BaseScene {
         randomize.setVisible(true);
         numInput.setVisible(true);
         clear.setVisible(true);
+        load.setVisible(true);
+        save.setVisible(true);
         tickSlider.setVisible(true);
         revert.setVisible(false);
         stop.setVisible(false);
@@ -297,5 +323,70 @@ public class ChallengeScene extends BaseScene {
      */
     private void setTickCounter0() {
         Platform.runLater(() -> game.getTickCount().set(0));
+    }
+
+    /**
+     * saves the current board config to a .gol file
+     */
+    private void saveConfig() {
+        String name = getFileName();
+        System.out.println(name);
+        var gridList = game.getGrid().getGridAsArrayList();
+    }
+
+    /**
+     * Prompts the user to enter a file name and checks whether it is valid
+     *
+     * @return a valid file name or null if they opted to cancel the task
+     */
+    private String getFileName() {
+        var valid = false;
+        String result = "";
+        while (!valid) {
+            valid = true;
+            TextInputDialog input = new TextInputDialog();
+            input.setTitle("Enter File Name");
+            input.setHeaderText("Please Enter File Name");
+            input.setHeaderText("Please enter a name containing only numbers and letters");
+            input.setContentText("");
+            Optional<String> userInput = input.showAndWait();
+            if (userInput.isEmpty()) {
+                return null;
+            }
+            result = userInput.get();
+            for (char c : result.toCharArray()) {
+                if (!Character.isLetterOrDigit(c)) {
+                    valid = false;
+                }
+            }
+            if(!valid) {
+                Alert error = new Alert(Alert.AlertType.ERROR, "Error: Illegal Character Error\n\nPlease use numbers " +
+                        "and letters only");
+                error.showAndWait();
+                continue;
+            }
+            if (result.length() == 0) {
+                valid = false;
+                Alert error = new Alert(Alert.AlertType.ERROR, "Error: Please Enter a File Name");
+                error.showAndWait();
+                continue;
+            }
+            if (valid) {
+                var file = new File(savePath + "/" + result + ".gol");
+                if (file.exists()) {
+                    valid = false;
+                    Alert error = new Alert(Alert.AlertType.ERROR, "Error: File Already Exists");
+                    error.showAndWait();
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Loads a board configuration from a .gol file
+     */
+    private void loadConfig() {
+
     }
 }

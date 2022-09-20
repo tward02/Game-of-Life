@@ -31,12 +31,9 @@ public class Game {
      * The grid model linked to the game
      */
     protected final Grid grid;
-
-    private Timer tickTimer;
-
     private final SimpleIntegerProperty tickCount = new SimpleIntegerProperty(0);
-
     private final SimpleIntegerProperty tickTime = new SimpleIntegerProperty(150);
+    private Timer tickTimer;
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
