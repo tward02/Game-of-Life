@@ -17,20 +17,23 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
+import uk.ac.soton.comp1206.utilities.GoLWriter;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 //TODO add a way to save and load configurations, add way to calculate how
-// many ticks until stabilization, rename/remove various methods and classes to suite theme of game
+// many ticks until stabilization
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
  */
-public class ChallengeScene extends BaseScene {
+public class SimulatorScene extends BaseScene {
 
-    public static final String savePath = System.getProperty("user.home") + "Documents/GoLSaves";
+    public static final String SAVE_PATH = System.getProperty("user.home") + File.separator + "Documents" +
+            File.separator + "GoLSaves";
 
-    private static final Logger logger = LogManager.getLogger(ChallengeScene.class);
+    private static final Logger logger = LogManager.getLogger(SimulatorScene.class);
     protected Game game;
     private BorderPane mainPane;
     private TextField numInput;
@@ -51,7 +54,7 @@ public class ChallengeScene extends BaseScene {
      *
      * @param gameWindow the Game Window
      */
-    public ChallengeScene(GameWindow gameWindow) {
+    public SimulatorScene(GameWindow gameWindow) {
         super(gameWindow);
         logger.info("Creating Challenge Scene");
     }
@@ -332,6 +335,14 @@ public class ChallengeScene extends BaseScene {
         String name = getFileName();
         System.out.println(name);
         var gridList = game.getGrid().getGridAsArrayList();
+        var golWriter = new GoLWriter(SAVE_PATH);
+        try {
+            golWriter.saveFile(name, game.getGrid().getCols(), gridList);
+        } catch (IOException e) {
+            logger.error("Failed to save game IOException");
+            e.printStackTrace();
+            //TODO add error message dialogue
+        }
     }
 
     /**
@@ -372,7 +383,7 @@ public class ChallengeScene extends BaseScene {
                 continue;
             }
             if (valid) {
-                var file = new File(savePath + "/" + result + ".gol");
+                var file = new File(SAVE_PATH + File.separator + result + ".gol");
                 if (file.exists()) {
                     valid = false;
                     Alert error = new Alert(Alert.AlertType.ERROR, "Error: File Already Exists");

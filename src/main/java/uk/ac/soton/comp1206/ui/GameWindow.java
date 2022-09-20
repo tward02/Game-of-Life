@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.scene.BaseScene;
-import uk.ac.soton.comp1206.scene.ChallengeScene;
+import uk.ac.soton.comp1206.scene.SimulatorScene;
 
 /**
  * The GameWindow is the single window for the game where everything takes place. To move between screens in the game,
@@ -73,7 +73,7 @@ public class GameWindow {
      * Display the single player challenge
      */
     public void startChallenge() {
-        loadScene(new ChallengeScene(this));
+        loadScene(new SimulatorScene(this));
     }
 
     /**
