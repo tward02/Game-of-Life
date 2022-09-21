@@ -24,7 +24,7 @@ import uk.ac.soton.comp1206.utilities.GoLProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-//TODO add way to calculate how many ticks until stabilization add a stop feature when stabilization is reached
+//TODO add way to calculate how many ticks until stabilization
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -191,7 +191,7 @@ public class SimulatorScene extends BaseScene {
     }
 
     /**
-     * Place holder so that nothing happens when a block is clicked during a sim
+     * Placeholder so that nothing happens when a block is clicked during a sim
      *
      * @param block the game block that was clicked
      */
@@ -199,7 +199,7 @@ public class SimulatorScene extends BaseScene {
     }
 
     /**
-     * Setup the game object and model
+     * Set up the game object and model
      */
     public void setupGame() {
         logger.info("Starting a new challenge");
@@ -240,12 +240,13 @@ public class SimulatorScene extends BaseScene {
         try {
             var size = Integer.parseInt(input);
             if (size > 50) {
-                Alert warning = new Alert(Alert.AlertType.WARNING, "Large grids will greatly reduce performance");
+                Alert warning = new Alert(Alert.AlertType.WARNING, "Large grids will greatly reduce " +
+                        "performance");
                 warning.showAndWait();
             }
             if (size < 3) {
-                Alert boardTooSmallError = new Alert(Alert.AlertType.ERROR, "Unable to create grid that small \n\n " +
-                        "Please ensure grid size is at least 3");
+                Alert boardTooSmallError = new Alert(Alert.AlertType.ERROR, "Unable to create grid that " +
+                        "small\n\nPlease ensure grid size is at least 3");
                 boardTooSmallError.showAndWait();
             } else {
                 newBoard(size);
@@ -373,8 +374,8 @@ public class SimulatorScene extends BaseScene {
                 }
             }
             if(!valid) {
-                Alert error = new Alert(Alert.AlertType.ERROR, "Error: Illegal Character Error\n\nPlease use numbers " +
-                        "and letters only");
+                Alert error = new Alert(Alert.AlertType.ERROR, "Error: Illegal Character Error\n\n" +
+                        "Please use numbers and letters only");
                 error.showAndWait();
                 continue;
             }

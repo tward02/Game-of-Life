@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,6 +17,10 @@ import java.util.TimerTask;
 public class Game {
 
     private static final Logger logger = LogManager.getLogger(Game.class);
+
+    private int[][] previous;
+
+    private int[][] penultimate;
 
     /**
      * Number of rows
@@ -68,6 +73,11 @@ public class Game {
         logger.info("Initialising game");
     }
 
+    /**
+     * Gets the property that stores the time between ticks
+     *
+     * @return tick time property
+     */
     public SimpleIntegerProperty getTickTime() {
         return tickTime;
     }
@@ -144,6 +154,9 @@ public class Game {
                 }
             }
         }
+        if (checkStabilized(newGrid)) {
+            pause();
+        }
 
         for (var x = 0; x < rows; x++) {
             for (var y = 0; y < cols; y++) {
@@ -151,6 +164,9 @@ public class Game {
             }
         }
         tickCount.set(tickCount.get() + 1);
+        penultimate = previous;
+        previous = newGrid;
+        //TODO maybe let sim run but display message if on a repetitive loop
     }
 
     /**
@@ -184,6 +200,8 @@ public class Game {
                 Platform.runLater(() -> tick());
             }
         };
+        previous = new int[rows][cols];
+        penultimate = new int[rows][cols];
         tickTimer = new Timer("Timer");
         tickTimer.schedule(task, 0, tickTime.get());
     }
@@ -193,5 +211,12 @@ public class Game {
      */
     public void pause() {
         tickTimer.cancel();
+    }
+
+    /**
+     * Checks if the simulation has stabilized
+     */
+    private boolean checkStabilized(int[][] next) {
+        return Arrays.deepEquals(next, previous) || Arrays.deepEquals(next, penultimate);
     }
 }
