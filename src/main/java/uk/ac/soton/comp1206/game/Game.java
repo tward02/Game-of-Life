@@ -54,6 +54,11 @@ public class Game {
         this.grid = new Grid(cols, rows);
     }
 
+    /**
+     * Gets the tick count property used to store the number of ticks a simulation has been through
+     *
+     * @return the tick count property
+     */
     public SimpleIntegerProperty getTickCount() {
         return tickCount;
     }

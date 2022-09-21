@@ -31,6 +31,9 @@ import java.util.Optional;
  */
 public class SimulatorScene extends BaseScene {
 
+    /**
+     * Used to store the save path of the save game folder
+     */
     public static final String SAVE_PATH = System.getProperty("user.home") + File.separator + "Documents" +
             File.separator + "GoLSaves";
 

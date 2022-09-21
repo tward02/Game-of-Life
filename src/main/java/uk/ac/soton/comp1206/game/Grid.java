@@ -61,6 +61,13 @@ public class Grid {
         }
     }
 
+    /**
+     * Creates a new grid and populates it with alive and dead cells according to a 2d array
+     *
+     * @param cols number of columns in the grid
+     * @param rows number of rows in the grid
+     * @param a the 2d array representation of the simulation state
+     */
     public Grid(int cols, int rows, int[][] a) {
         this.rows = rows;
         this.cols = cols;
