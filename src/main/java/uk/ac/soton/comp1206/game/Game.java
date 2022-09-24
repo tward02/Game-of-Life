@@ -17,27 +17,22 @@ import java.util.TimerTask;
 public class Game {
 
     private static final Logger logger = LogManager.getLogger(Game.class);
-
-    private int[][] previous;
-
-    private int[][] penultimate;
-
     /**
      * Number of rows
      */
     protected final int rows;
-
     /**
      * Number of columns
      */
     protected final int cols;
-
     /**
      * The grid model linked to the game
      */
     protected final Grid grid;
     private final SimpleIntegerProperty tickCount = new SimpleIntegerProperty(0);
     private final SimpleIntegerProperty tickTime = new SimpleIntegerProperty(150);
+    private int[][] previous;
+    private int[][] penultimate;
     private Timer tickTimer;
 
     /**

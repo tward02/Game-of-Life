@@ -92,11 +92,11 @@ public class GameBoard extends GridPane {
      * Create a new GameBoard with its own internal grid, specifying the number of columns and rows, along with the
      * visual width and height.
      *
-     * @param cols the number of columns of the grid
-     * @param rows the number of rows of the grid
-     * @param width the width of the grid in pixels
+     * @param cols   the number of columns of the grid
+     * @param rows   the number of rows of the grid
+     * @param width  the width of the grid in pixels
      * @param height the height of the grid in pixels
-     * @param a the 2d array representation of a sim state to populate the grid
+     * @param a      the 2d array representation of a sim state to populate the grid
      */
     public GameBoard(int cols, int rows, double width, double height, int[][] a) {
         this.cols = cols;

@@ -66,7 +66,7 @@ public class Grid {
      *
      * @param cols number of columns in the grid
      * @param rows number of rows in the grid
-     * @param a the 2d array representation of the simulation state
+     * @param a    the 2d array representation of the simulation state
      */
     public Grid(int cols, int rows, int[][] a) {
         this.rows = rows;

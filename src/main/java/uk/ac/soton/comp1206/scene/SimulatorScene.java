@@ -376,7 +376,7 @@ public class SimulatorScene extends BaseScene {
                     valid = false;
                 }
             }
-            if(!valid) {
+            if (!valid) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Error: Illegal Character Error\n\n" +
                         "Please use numbers and letters only");
                 error.showAndWait();
